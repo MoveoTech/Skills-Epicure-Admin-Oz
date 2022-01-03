@@ -7,7 +7,7 @@ import { IChef, IDish, IRestaurant } from '../assets/models';
 export class RestaurantsService {
     restaurantsUpdateEvent = new EventEmitter<IRestaurant[]>();
 
-    private restaurants: IRestaurant[] = [];
+    restaurants: IRestaurant[] = [];
     // readonly API_URL = API_URL.chefs;
 
     constructor(private http: HttpClient) {

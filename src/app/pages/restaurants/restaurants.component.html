@@ -1,23 +1,26 @@
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">chef</th>
-      <th scope="col">Image Url</th>
-      <th scope="col">Popular Restaurant</th>
-      <!-- <th scope="col">Population</th> -->
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let restaurant of restaurants; index as i">
-      <th scope="row">{{ i + 1 }}</th>
-      <td>
-        {{ restaurant.name }}
-      </td>
-      <td>{{ restaurant.chef.name }}</td>
-      <td>{{ restaurant.imageUrl }}</td>
-      <td>{{ restaurant.popularRestaurant }}</td>
-    </tr>
-  </tbody>
-</table>
+<div class="table-responsive">
+
+    <table class="table table-striped table-dark table-hover">
+      <thead>
+        <tr class="text-center">
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Chef</th>
+          <th scope="col">Image Url</th>
+          <th scope="col">Popular</th>
+          <!-- <th scope="col">Population</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="text-center" *ngFor="let restaurant of restaurants; index as i">
+          <th scope="row">{{ i + 1 }}</th>
+          <td>
+            {{ restaurant.name }}
+          </td>
+          <td>{{ restaurant.chef.name }}</td>
+          <td>{{ restaurant.imageUrl }}</td>
+          <td>{{ restaurant.popularRestaurant }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>

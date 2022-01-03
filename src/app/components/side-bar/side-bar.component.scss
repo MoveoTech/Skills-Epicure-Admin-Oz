@@ -1,13 +1,16 @@
-@import '../../assets/styles/setup/variables';
+@import "../../assets/styles/setup/variables";
 .container {
-  border: 1px black solid;
   display: flex;
   flex-direction: column;
   align-items: center;
-//   justify-content: center;
+  //   justify-content: center;
   padding: 10px 5px;
-  background-color: $side-bar-background-color;
+  background-color: #fafafa;
   height: 100%;
+  background-image: url('../../../assets/images/hero-picture.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  
   .logo {
     width: 40px;
     margin-bottom: 30px;

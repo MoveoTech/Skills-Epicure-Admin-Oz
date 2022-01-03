@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { IRestaurant } from 'src/app/assets/models';
 import { RestaurantsService } from 'src/app/services/restaurants.service';
 
@@ -7,7 +7,7 @@ import { RestaurantsService } from 'src/app/services/restaurants.service';
   templateUrl: './restaurants.component.html',
   styleUrls: ['./restaurants.component.scss']
 })
-export class RestaurantsComponent implements OnInit {
+export class RestaurantsComponent implements OnInit, AfterContentInit {
   restaurants: IRestaurant[];
   constructor(private restaurantsService: RestaurantsService) { }
 
@@ -15,6 +15,14 @@ export class RestaurantsComponent implements OnInit {
     this.restaurantsService.restaurantsUpdateEvent.subscribe((restaurants: IRestaurant[]) => {
       this.restaurants = restaurants;
     })
+  }
+
+  ngAfterContentInit() {
+    this.setRestaurants();
+  }
+
+  setRestaurants() {
+    this.restaurants = this.restaurantsService.restaurants;
   }
 
 }

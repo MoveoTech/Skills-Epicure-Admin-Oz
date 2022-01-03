@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, Component, OnInit } from '@angular/core';
 import { IChef } from 'src/app/assets/models';
 import { ChefsService } from 'src/app/services/chefs.service';
 
@@ -8,7 +8,7 @@ import { ChefsService } from 'src/app/services/chefs.service';
   styleUrls: ['./chefs.component.scss'],
   providers: []
 })
-export class ChefsComponent implements OnInit {
+export class ChefsComponent implements OnInit, AfterContentInit {
   chefs: IChef[] = [];
 
   constructor(private chefsService: ChefsService) {
@@ -18,6 +18,14 @@ export class ChefsComponent implements OnInit {
   ngOnInit(): void {
     this.chefsService.chefsUpdateEvent.subscribe(chefs => { this.chefs = chefs })
     // this.chefsService.getChefs()
+  }
+
+  ngAfterContentInit() {
+    this.setChefs();
+  }
+
+  setChefs() {
+    this.chefs = this.chefsService.chefs;
   }
 
 

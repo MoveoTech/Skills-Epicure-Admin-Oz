@@ -7,7 +7,7 @@ import { IChef, IDish } from '../assets/models';
 export class DishesService {
     dishesUpdateEvent = new EventEmitter<IDish[]>();
 
-    private dishes: IDish[] = [];
+    dishes: IDish[] = [];
     // readonly API_URL = API_URL.chefs;
 
     constructor(private http: HttpClient) {

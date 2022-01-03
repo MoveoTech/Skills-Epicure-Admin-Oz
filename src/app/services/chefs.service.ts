@@ -7,7 +7,7 @@ import { IChef } from '../assets/models';
 export class ChefsService {
     chefsUpdateEvent = new EventEmitter<IChef[]>();
 
-    private chefs: IChef[] = [];
+    chefs: IChef[] = [];
     private chefOfTheWeek: IChef = undefined;
     // readonly API_URL = API_URL.chefs;
 
