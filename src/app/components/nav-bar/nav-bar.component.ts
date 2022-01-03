@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav-bar.component.scss']
 })
 export class NavBarComponent implements OnInit {
+  chefIcon = 'assets/icons/chef-icon.svg';
 
   constructor() { }
 

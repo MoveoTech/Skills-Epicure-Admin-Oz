@@ -1,0 +1,15 @@
+@import '../../assets/styles/setup/variables';
+.container {
+  border: 1px black solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+//   justify-content: center;
+  padding: 10px 5px;
+  background-color: $side-bar-background-color;
+  height: 100%;
+  .logo {
+    width: 40px;
+    margin-bottom: 30px;
+  }
+}
