@@ -1,0 +1,21 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Info</th>
+      <th scope="col">Chef Of The Week</th>
+      <!-- <th scope="col">Population</th> -->
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let chef of chefs; index as i">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>
+        {{ chef.name }}
+      </td>
+      <td>{{ chef.info }}</td>
+      <td>{{ chef.chefOfTheWeek }}</td>
+    </tr>
+    </tbody>
+  </table>

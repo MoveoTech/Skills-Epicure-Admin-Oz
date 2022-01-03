@@ -1,0 +1,30 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Components</th>
+      <th scope="col">Type</th>
+      <th scope="col">Price</th>
+      <th scope="col">Image Url</th>
+
+      <!-- <th scope="col">Population</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let dish of dishes; index as i">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>
+        {{ dish.name }}
+      </td>
+      <td>{{ dish.components }}</td>
+      <td>
+        <tr *ngFor="let type of dish.type">
+          <td>{{ type.value }}</td>
+        </tr>
+      </td>
+      <td>{{dish.price}} ₪</td>
+      <td>{{dish.imageUrl}}</td>
+    </tr>
+  </tbody>
+</table>
