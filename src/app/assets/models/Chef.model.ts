@@ -1,7 +1,7 @@
 
 
 export default interface IChef {
-    _id:string,
+    _id?:string,
     name: string;
     info?: string;
     imageUrl?:string;

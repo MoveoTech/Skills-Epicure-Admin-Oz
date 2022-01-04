@@ -23,4 +23,21 @@ export class ChefsService {
             this.chefsUpdateEvent.emit(this.chefs);
         })
     }
+
+    updateChef(chef: IChef) {
+        //need to check why using API_URL.chefs not working
+
+        this.http.put(`http://127.0.0.1:3000/chefs/${chef._id}`, chef).subscribe((responseChef: IChef[]) => {
+            console.log("response put chef", responseChef);
+            this.getChefs();
+        })
+    }
+
+    postChef(chef: IChef) {
+        //need to check why using API_URL.chefs not working
+        this.http.post('http://127.0.0.1:3000/chefs', chef).subscribe((responseChef: IChef[]) => {
+            console.log("response post chef", responseChef);
+            this.getChefs();
+        })
+    }
 }

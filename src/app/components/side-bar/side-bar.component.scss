@@ -3,14 +3,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  //   justify-content: center;
   padding: 10px 5px;
-  background-color: #fafafa;
+  background-color: #fafafa; 
   height: 100%;
-  background-image: url('../../../assets/images/hero-picture.png');
-  background-position: center;
+  background-image: url("../../../assets/images/hero-picture@2x.png");
+  background-position: top;
   background-repeat: no-repeat;
-  
+  background-size:  fill;
+
   .logo {
     width: 40px;
     margin-bottom: 30px;

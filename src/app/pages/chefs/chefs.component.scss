@@ -1,12 +1,8 @@
-.container {
+.table-responsive {
   // max-width: 100%;
 
-  .table {
-    max-width: 1400px;
-    padding: 0;
-
-    .chef-of-the-week {
-      width: 30px;
+    .chef-row{
+        cursor: pointer;
     }
-  }
+
 }

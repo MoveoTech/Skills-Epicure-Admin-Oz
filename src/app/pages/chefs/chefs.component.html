@@ -1,23 +1,26 @@
 <div class="table-responsive">
+  <button type="button" class="btn btn-primary" (click)="openModal()">New Chef</button>
   <table class="table table-dark table-striped table-hover">
     <thead>
       <tr class="text-center">
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Info</th>
-        <th scope="col" >Weekly Chef</th>
-        <!-- <th scope="col"></th> -->
+        <th class="col" scope="col">#</th>
+        <th class="col-2" scope="col">Name</th>
+        <th class="col" scope="col">Info</th>
+        <th class="col-2" scope="col">Weekly Chef</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="text-center" *ngFor="let chef of chefs; index as i">
+      <tr
+        class="text-center chef-row"
+        *ngFor="let chef of chefs; index as i"
+        (click)="openModal(i)"
+      >
         <th scope="row">{{ i + 1 }}</th>
         <td>
           {{ chef.name }}
         </td>
         <td>{{ chef.info }}</td>
         <td>{{ chef.chefOfTheWeek }}</td>
-        <!-- <td><button>Edit</button></td> -->
       </tr>
     </tbody>
   </table>

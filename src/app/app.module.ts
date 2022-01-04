@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -12,6 +11,9 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { SideBarComponent } from './components/side-bar/side-bar.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { ChefFormModalComponent } from './components/chef-form-modal/chef-form-modal.component';
+import { NgbModule,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,14 +24,17 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
     RestaurantsComponent,
     ChefsComponent,
     SideBarComponent,
-    NavBarComponent
+    NavBarComponent,
+    ChefFormModalComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
+    NgbModule,
     RouterModule.forRoot(APP_ROUTES),
   ],
-  providers: [],
+  providers: [NgbActiveModal],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

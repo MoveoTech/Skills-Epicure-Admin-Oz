@@ -1,5 +1,7 @@
-import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { AfterContentInit, Component, OnInit, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IChef } from 'src/app/assets/models';
+import { ChefFormModalComponent } from 'src/app/components/chef-form-modal/chef-form-modal.component';
 import { ChefsService } from 'src/app/services/chefs.service';
 
 @Component({
@@ -11,13 +13,10 @@ import { ChefsService } from 'src/app/services/chefs.service';
 export class ChefsComponent implements OnInit, AfterContentInit {
   chefs: IChef[] = [];
 
-  constructor(private chefsService: ChefsService) {
-
-  }
+  constructor(private chefsService: ChefsService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.chefsService.chefsUpdateEvent.subscribe(chefs => { this.chefs = chefs })
-    // this.chefsService.getChefs()
   }
 
   ngAfterContentInit() {
@@ -26,6 +25,27 @@ export class ChefsComponent implements OnInit, AfterContentInit {
 
   setChefs() {
     this.chefs = this.chefsService.chefs;
+  }
+
+  openModal(chefIndex?: number) {
+    const activeModalRef = this.modalService.open(ChefFormModalComponent);
+    const chefActiveModal = activeModalRef.componentInstance as ChefFormModalComponent;
+
+    if (chefIndex !== undefined)
+      chefActiveModal.editChef = this.chefs[chefIndex];
+
+    const subscription = chefActiveModal.onSubmitted.subscribe(chef => {
+      console.log("chef after submitted", chef);
+      this.chefSubmittedHandler(chef);
+      subscription.unsubscribe();
+    })
+  }
+
+  chefSubmittedHandler(chef: IChef) {
+    if (chef._id)
+      this.chefsService.updateChef(chef);
+    else
+      this.chefsService.postChef(chef);
   }
 
 
