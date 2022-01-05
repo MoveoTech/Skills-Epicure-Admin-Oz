@@ -1,4 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, Input, OnInit, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,7 +10,7 @@ import { IChef } from 'src/app/assets/models';
 })
 export class ChefFormModalComponent implements OnInit, AfterViewInit {
   @Input() editChef: IChef;
-  @ViewChild('chefForm') form: NgForm;
+  @ViewChild('form') form: NgForm;
   @Output() onSubmitted = new EventEmitter<IChef>();
 
   editMode = false;

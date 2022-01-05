@@ -14,6 +14,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { ChefFormModalComponent } from './components/chef-form-modal/chef-form-modal.component';
 import { NgbModule,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
+import { RestaurantFormModalComponent } from './components/restaurant-form-modal/restaurant-form-modal.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { FormsModule } from '@angular/forms';
     SideBarComponent,
     NavBarComponent,
     ChefFormModalComponent,
+    RestaurantFormModalComponent,
   ],
   imports: [
     BrowserModule,

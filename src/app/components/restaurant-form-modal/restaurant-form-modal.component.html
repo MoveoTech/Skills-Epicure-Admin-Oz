@@ -1,0 +1,68 @@
+<form (ngSubmit)="onSubmit()" #form="ngForm">
+  <div class="modal-header">
+    <h4 class="modal-title">{{ title }}</h4>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="nameInput" class="form-label">Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="nameInput"
+        placeholder="Restaurant Name"
+        ngModel
+        name="name"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="chefInput" class="form-label">Chef</label>
+      <select
+        class="form-select"
+        aria-label="Default select "
+        ngModel
+        name="chef"
+        required
+      >
+        <option *ngFor="let chef of chefs; index as i" value={{chef._id}}>
+          {{ chef.name }}
+        </option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="imageUrlInput" class="form-label">Image Url</label>
+      <input
+        type="text"
+        class="form-control"
+        id="imageUrlInput"
+        placeholder="Chef Image Url"
+        ngModel
+        name="imageUrl"
+      />
+    </div>
+    <div class="form-check form-switch">
+      <label class="form-check-label" for="popularRestaurantSwitch"
+        >Popular Restaurant</label
+      >
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="popularRestaurantSwitch"
+        ngModel
+        name="popularRestaurant"
+      />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="activeModal.close('Close click')"
+    >
+      Close
+    </button>
+    <button type="submit" class="btn btn-primary" [disabled]="!form.dirty">
+      {{ submitButtonText }}
+    </button>
+  </div>
+</form>

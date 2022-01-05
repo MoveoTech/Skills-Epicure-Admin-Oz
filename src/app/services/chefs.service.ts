@@ -12,13 +12,14 @@ export class ChefsService {
     // readonly API_URL = API_URL.chefs;
 
     constructor(private http: HttpClient) {
-        this.getChefs();
+        console.log("chef service constructor",this.chefs);
+        this.fetchChefs();
     }
 
-    getChefs() {
+    fetchChefs() {
         //need to check why using API_URL.chefs not working
         this.http.get('http://127.0.0.1:3000/chefs').subscribe((chefs: IChef[]) => {
-            console.log("Chefs", chefs)
+            console.log("fetchChefs", chefs)
             this.chefs = chefs;
             this.chefsUpdateEvent.emit(this.chefs);
         })
@@ -27,17 +28,17 @@ export class ChefsService {
     updateChef(chef: IChef) {
         //need to check why using API_URL.chefs not working
 
-        this.http.put(`http://127.0.0.1:3000/chefs/${chef._id}`, chef).subscribe((responseChef: IChef[]) => {
+        this.http.put(`http://127.0.0.1:3000/chefs/${chef._id}`, chef).subscribe((responseChef: IChef) => {
             console.log("response put chef", responseChef);
-            this.getChefs();
+            this.fetchChefs();
         })
     }
 
     postChef(chef: IChef) {
         //need to check why using API_URL.chefs not working
-        this.http.post('http://127.0.0.1:3000/chefs', chef).subscribe((responseChef: IChef[]) => {
+        this.http.post('http://127.0.0.1:3000/chefs', chef).subscribe((responseChef: IChef) => {
             console.log("response post chef", responseChef);
-            this.getChefs();
+            this.fetchChefs();
         })
     }
 }
