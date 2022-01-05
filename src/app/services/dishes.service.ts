@@ -1,17 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { API_URL } from '../assets/constants/constants';
-import { IChef, IDish } from '../assets/models';
+import { IChef, IDish, IDishType } from '../assets/models';
 
 @Injectable({ providedIn: 'root' })
 export class DishesService {
     dishesUpdateEvent = new EventEmitter<IDish[]>();
 
     dishes: IDish[] = [];
-    // readonly API_URL = API_URL.chefs;
+    dishTypes: IDishType[] = [];
+
 
     constructor(private http: HttpClient) {
         this.fetchDishes();
+        this.fetchDishTypes();
     }
 
     fetchDishes() {
@@ -20,6 +22,14 @@ export class DishesService {
             console.log("Dishes", dishes)
             this.dishes = dishes;
             this.dishesUpdateEvent.emit(this.dishes);
+        })
+    }
+
+    fetchDishTypes() {
+        //need to check why using API_URL.chefs not working
+        this.http.get('http://127.0.0.1:3000/dishes/types').subscribe((dishTypes: IDishType[]) => {
+            console.log("Dish types", dishTypes)
+            this.dishTypes = dishTypes;
         })
     }
 

@@ -2,14 +2,20 @@
   <div class="modal-header">
     <h4 class="modal-title">{{ title }}</h4>
     <button
-    *ngIf="editMode"
-    type="button"
-    class="btn btn-outline-danger btn-delete"
-    (click)="deleteItem()"
-  >
-  <img class="bi bi-trash svg-delete" src="assets/icons/trash.svg" alt="trash icon"/>
-  </button>  </div>
+      *ngIf="editMode"
+      type="button"
+      class="btn btn-outline-danger btn-delete"
+      (click)="deleteItem()"
+    >
+      <img
+        class="bi bi-trash svg-delete"
+        src="assets/icons/trash.svg"
+        alt="trash icon"
+      />
+    </button>
+  </div>
   <div class="modal-body">
+    <!-- Name Input -->
     <div class="mb-3">
       <label for="nameInput" class="form-label">Name</label>
       <input
@@ -23,6 +29,8 @@
         required
       />
     </div>
+
+    <!-- Info Input -->
     <div class="mb-3">
       <label for="infoTextarea" class="form-label">Info</label>
       <textarea
@@ -34,6 +42,8 @@
         name="info"
       ></textarea>
     </div>
+
+    <!-- Image Url Input -->
     <div class="mb-3">
       <label for="imageUrlInput" class="form-label">Image Url</label>
       <input
@@ -45,6 +55,8 @@
         name="imageUrl"
       />
     </div>
+
+    <!-- Chef Of The Week Toggle -->
     <div class="form-check form-switch">
       <label class="form-check-label" for="chefOfTheWeekSwitch"
         >Chef Of The Week</label
@@ -66,7 +78,11 @@
     >
       Close
     </button>
-    <button type="submit" class="btn btn-outline-primary" [disabled]="!form.dirty">
+    <button
+      type="submit"
+      class="btn btn-outline-primary"
+      [disabled]="!form.dirty"
+    >
       {{ submitButtonText }}
     </button>
   </div>

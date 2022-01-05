@@ -14,7 +14,9 @@
       />
     </button>
   </div>
+
   <div class="modal-body">
+    <!-- Name Input -->
     <div class="mb-3">
       <label for="nameInput" class="form-label">Name</label>
       <input
@@ -22,18 +24,19 @@
         type="text"
         class="form-control"
         id="nameInput"
-        placeholder="Restaurant Name"
+        placeholder="Dish Name"
         ngModel
         name="name"
         required
       />
     </div>
+
+    <!-- Restaurant Input -->
     <div class="mb-3">
       <label for="restaurantSelect" class="form-label">Restaurant</label>
       <select
         id="restaurantSelect"
         class="form-select"
-        aria-label="Default select "
         ngModel
         name="restaurant"
         required
@@ -46,6 +49,8 @@
         </option>
       </select>
     </div>
+
+    <!-- Components Input -->
     <div class="mb-3">
       <label for="componentsTextarea" class="form-label">Components</label>
       <textarea
@@ -57,6 +62,31 @@
         name="components"
       ></textarea>
     </div>
+
+    <!-- Dish Type Input -->
+    <div ngModelGroup="type" name="type" class="mb-3">
+      <div
+        *ngFor="let type of dishTypes; index as i"
+        class="btn-group"
+        role="group"
+      >
+        <input
+          type="checkbox"
+          class="btn-check btn-type"
+          id="btn-check-outlined-{{ i }}"
+          autocomplete="off"
+          [ngModel]="false"
+          name="{{ type.value }}"
+        />
+        <label
+          class="btn btn-outline-primary"
+          for="btn-check-outlined-{{ i }}"
+          >{{ type.value }}</label
+        >
+      </div>
+    </div>
+
+    <!-- Image Url Input -->
     <div class="mb-3">
       <label for="imageUrlInput" class="form-label">Image Url</label>
       <input
@@ -68,6 +98,8 @@
         name="imageUrl"
       />
     </div>
+
+    <!-- Price Input -->
     <div class="mb-3">
       <label for="priceInput" class="form-label">Price</label>
       <div class="input-group mb-3">
@@ -84,6 +116,8 @@
         <span class="input-group-text">₪</span>
       </div>
     </div>
+
+    <!-- Signature Dish Input -->
     <div class="form-check form-switch">
       <label class="form-check-label" for="signatureDishSwitch"
         >Signature Dish</label
@@ -92,11 +126,13 @@
         class="form-check-input"
         type="checkbox"
         id="signatureDishSwitch"
-        ngModel
+        [ngModel]="false"
         name="signatureDish"
+        
       />
     </div>
   </div>
+
   <div class="modal-footer">
     <button
       type="button"

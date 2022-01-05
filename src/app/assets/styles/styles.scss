@@ -1,4 +1,7 @@
 @import "./setup/variables";
+router-outlet + * {
+  width:100%
+}
 
 *::before,
 *::after,

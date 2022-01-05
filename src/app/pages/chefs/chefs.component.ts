@@ -16,7 +16,7 @@ export class ChefsComponent implements OnInit, AfterContentInit {
   constructor(private chefsService: ChefsService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
-    this.chefsService.chefsUpdateEvent.subscribe(chefs => { this.chefs = chefs })
+    this.setChefs();
   }
 
   ngAfterContentInit() {

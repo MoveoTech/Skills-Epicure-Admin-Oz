@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
-import { IDish, IRestaurant } from 'src/app/assets/models';
+import { IDish, IDishType, IRestaurant } from 'src/app/assets/models';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestaurantsService } from 'src/app/services/restaurants.service';
+import { DishesService } from 'src/app/services/dishes.service';
 
 @Component({
   selector: 'app-dish-form-modal',
@@ -16,16 +17,18 @@ export class DishFormModalComponent implements OnInit {
   @Output('onSubmit') onSubmitEvent = new EventEmitter<IDish>();
   @Output('onDelete') onDeleteEvent = new EventEmitter<IDish>();
   restaurants: IRestaurant[];
+  dishTypes: IDishType[];
 
   editMode = false;
   title = "New Dish"
   submitButtonText = "Create";
 
-  constructor(public activeModal: NgbActiveModal, private restaurantsService: RestaurantsService) { }
+  constructor(public activeModal: NgbActiveModal, private restaurantsService: RestaurantsService, private dishesService: DishesService) { }
 
   ngOnInit(): void {
     console.log("onInit", this.editDish, this.restaurants);
     this.restaurants = this.restaurantsService.restaurants;
+    this.dishTypes = this.dishesService.dishTypes;
 
     if (this.editDish) {
       this.editMode = true;
@@ -36,7 +39,6 @@ export class DishFormModalComponent implements OnInit {
 
   ngAfterViewInit() {
     console.log("afterViewInit", this.editDish);
-
     if (this.editMode)
       this.setFormData();
   }
@@ -53,6 +55,7 @@ export class DishFormModalComponent implements OnInit {
 
   getFormData() {
     let formData = { ...this.form.form.value };
+    formData.type = this.getTypeIdArray(formData.type);
 
     if (this.editMode)
       formData._id = this.editDish._id;
@@ -62,6 +65,7 @@ export class DishFormModalComponent implements OnInit {
 
   setFormData() {
     const { name, restaurant, components, imageUrl, price, type, signatureDish } = this.editDish;
+    const formTypes = this.getTypeFormArray(type);
 
     setTimeout(() => {
       this.form.setValue({
@@ -70,9 +74,30 @@ export class DishFormModalComponent implements OnInit {
         components: components ? components : '',
         imageUrl: imageUrl ? imageUrl : '',
         price: price ? price : '',
+        type: formTypes,
         signatureDish: signatureDish ? signatureDish : false
       });
     });
+  }
+
+  getTypeFormArray(types: IDishType[]) {
+    const formTypes = {};
+    this.dishTypes.forEach(type => formTypes[`${type.value}`] = false);
+
+    types.forEach(type => formTypes[`${type.value}`] = true)
+
+    return formTypes;
+  }
+
+  getTypeIdArray(formTypes: { [key: string]: boolean }) {
+    const typesId: string[] = [];
+    
+    this.dishTypes.forEach(type => {
+      if(formTypes[`${type.value}`])
+        typesId.push(type._id)
+    } );
+
+    return typesId;
   }
 
   deleteItem() {
@@ -94,4 +119,5 @@ export class DishFormModalComponent implements OnInit {
         }
       });
   }
+
 }
