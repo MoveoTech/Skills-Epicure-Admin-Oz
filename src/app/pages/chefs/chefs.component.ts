@@ -34,11 +34,17 @@ export class ChefsComponent implements OnInit, AfterContentInit {
     if (chefIndex !== undefined)
       chefActiveModal.editChef = this.chefs[chefIndex];
 
-    const subscription = chefActiveModal.onSubmitted.subscribe(chef => {
+    const subscription = chefActiveModal.onSubmitEvent.subscribe(chef => {
       console.log("chef after submitted", chef);
       this.chefSubmittedHandler(chef);
       subscription.unsubscribe();
-    })
+    });
+
+    const deleteSubscription = chefActiveModal.onDeleteEvent.subscribe(chef => {
+      console.log("chef to delete ", chef);
+      this.chefDeleteHandler(chef);
+      deleteSubscription.unsubscribe();
+    });
   }
 
   chefSubmittedHandler(chef: IChef) {
@@ -47,6 +53,11 @@ export class ChefsComponent implements OnInit, AfterContentInit {
     else
       this.chefsService.postChef(chef);
   }
+
+  chefDeleteHandler(chef:IChef){
+    this.chefsService.deleteChef(chef._id);
+  }
+
 
 
 }

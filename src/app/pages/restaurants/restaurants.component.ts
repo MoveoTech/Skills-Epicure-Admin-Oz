@@ -11,7 +11,7 @@ import { RestaurantsService } from 'src/app/services/restaurants.service';
 })
 export class RestaurantsComponent implements OnInit, AfterContentInit {
   restaurants: IRestaurant[];
-  constructor(private restaurantsService: RestaurantsService,private modalService: NgbModal) { }
+  constructor(private restaurantsService: RestaurantsService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.restaurantsService.restaurantsUpdateEvent.subscribe((restaurants: IRestaurant[]) => {
@@ -29,16 +29,22 @@ export class RestaurantsComponent implements OnInit, AfterContentInit {
 
   openModal(restaurantIndex?: number) {
     const activeModalRef = this.modalService.open(RestaurantFormModalComponent);
-    const chefActiveModal = activeModalRef.componentInstance as RestaurantFormModalComponent;
+    const restaurantActiveModal = activeModalRef.componentInstance as RestaurantFormModalComponent;
 
     if (restaurantIndex !== undefined)
-      chefActiveModal.editRestaurant = this.restaurants[restaurantIndex];
+      restaurantActiveModal.editRestaurant = this.restaurants[restaurantIndex];
 
-    const subscription = chefActiveModal.onSubmitted.subscribe(restaurant => {
+    const subscription = restaurantActiveModal.onSubmitEvent.subscribe(restaurant => {
       console.log("restaurant after submitted", restaurant);
       this.restaurantSubmittedHandler(restaurant);
       subscription.unsubscribe();
     })
+
+    const deleteSubscription = restaurantActiveModal.onDeleteEvent.subscribe(restaurant => {
+      console.log("restaurant to delete ", restaurant);
+      this.restaurantDeleteHandler(restaurant);
+      deleteSubscription.unsubscribe();
+    });
   }
 
   restaurantSubmittedHandler(restaurant: IRestaurant) {
@@ -48,4 +54,7 @@ export class RestaurantsComponent implements OnInit, AfterContentInit {
       this.restaurantsService.postRestaurant(restaurant);
   }
 
+  restaurantDeleteHandler(restaurant: IRestaurant) {
+    this.restaurantsService.deleteRestaurant(restaurant._id);
+  }
 }

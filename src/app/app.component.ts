@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ChefsService } from './services/chefs.service';
+import { RestaurantsService } from './services/restaurants.service';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,5 @@ export class AppComponent {
   title = 'Epicure-Admin';
 
   //chefsService declaration to fetch data when web start
-  constructor( private chefsService: ChefsService){}
+  constructor( private chefsService: ChefsService, private restaurantsService: RestaurantsService){}
 }

@@ -10,10 +10,10 @@ export class RestaurantsService {
     restaurants: IRestaurant[] = [];
     // readonly API_URL = API_URL.chefs;
     constructor(private http: HttpClient) {
-        this.getRestaurants();
+        this.fetchRestaurants();
     }
 
-    getRestaurants() {
+    fetchRestaurants() {
         //need to check why using API_URL.chefs not working
         this.http.get('http://127.0.0.1:3000/restaurants').subscribe((restaurants: IRestaurant[]) => {
             console.log("Restaurants", restaurants)
@@ -26,7 +26,7 @@ export class RestaurantsService {
         //need to check why using API_URL.chefs not working
         this.http.put(`http://127.0.0.1:3000/restaurants/${restaurant._id}`, restaurant).subscribe((responseRestaurant: IRestaurant) => {
             console.log("response put restaurant", responseRestaurant);
-            this.getRestaurants();
+            this.fetchRestaurants();
         })
     }
 
@@ -34,7 +34,14 @@ export class RestaurantsService {
         //need to check why using API_URL.chefs not working
         this.http.post('http://127.0.0.1:3000/restaurants', restaurant).subscribe((responseRestaurant: IRestaurant) => {
             console.log("response post restaurant", responseRestaurant);
-            this.getRestaurants();
+            this.fetchRestaurants();
+        })
+    }
+
+    deleteRestaurant(id:string){
+        this.http.delete(`http://127.0.0.1:3000/restaurants/${id}`).subscribe((response: string) => {
+            console.log("response delete restaurant", response);
+            this.fetchRestaurants();
         })
     }
 }

@@ -3,11 +3,7 @@
 .container-md{
     display: flex;
     flex-direction: row;
-    // border: 2px blue solid;
     height: 100%;
-    // width: 100%;
     max-width: 100%;
-    background-color: $background-color;
-
-
+   background-color: $background-color;
 }

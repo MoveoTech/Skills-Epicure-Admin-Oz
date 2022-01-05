@@ -1,11 +1,19 @@
 <form (ngSubmit)="onSubmit()" #form="ngForm">
   <div class="modal-header">
     <h4 class="modal-title">{{ title }}</h4>
-  </div>
+    <button
+    *ngIf="editMode"
+    type="button"
+    class="btn btn-outline-danger btn-delete"
+    (click)="deleteItem()"
+  >
+  <img class="bi bi-trash svg-delete" src="assets/icons/trash.svg" alt="trash icon"/>
+  </button>  </div>
   <div class="modal-body">
     <div class="mb-3">
       <label for="nameInput" class="form-label">Name</label>
       <input
+        ngbAutofocus
         type="text"
         class="form-control"
         id="nameInput"
@@ -53,12 +61,12 @@
   <div class="modal-footer">
     <button
       type="button"
-      class="btn btn-danger"
+      class="btn btn-secondary"
       (click)="activeModal.close('Close click')"
     >
       Close
     </button>
-    <button type="submit" class="btn btn-primary" [disabled]="!form.dirty">
+    <button type="submit" class="btn btn-outline-primary" [disabled]="!form.dirty">
       {{ submitButtonText }}
     </button>
   </div>

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import swal from 'sweetalert';
 import { IChef, IRestaurant } from 'src/app/assets/models';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChefsService } from 'src/app/services/chefs.service';
@@ -13,17 +14,15 @@ import { ChefsService } from 'src/app/services/chefs.service';
 export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
   @Input() editRestaurant: IRestaurant;
   @ViewChild('form') form: NgForm;
-  @Output() onSubmitted = new EventEmitter<IRestaurant>();
+  @Output('onSubmit') onSubmitEvent = new EventEmitter<IRestaurant>();
+  @Output('onDelete') onDeleteEvent = new EventEmitter<IRestaurant>();
   chefs: IChef[];
 
   editMode = false;
   title = "New Restaurant"
   submitButtonText = "Create";
 
-
-  constructor(public activeModal: NgbActiveModal, private chefsService: ChefsService) {
-    
-  }
+  constructor(public activeModal: NgbActiveModal, private chefsService: ChefsService) {}
 
   ngOnInit(): void {
     console.log("onInit", this.editRestaurant, this.chefs);
@@ -36,25 +35,30 @@ export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSubmit() {
-    if (this.form.valid) {
-      let chefToEmit = { ...this.form.form.value };
-
-      if (this.editMode)
-        chefToEmit._id = this.editRestaurant._id;
-
-      console.log("Restaurant To Emit", chefToEmit);
-      this.onSubmitted.emit(chefToEmit);
-      this.activeModal.close();
-    }
-  }
-
-
   ngAfterViewInit() {
     console.log("afterViewInit", this.editRestaurant);
 
     if (this.editMode)
       this.setFormData();
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      const restaurant = this.getFormData();
+
+      console.log("Restaurant To Emit", restaurant);
+      this.onSubmitEvent.emit(restaurant);
+      this.activeModal.close();
+    }
+  }
+
+  getFormData() {
+    let formData = { ...this.form.form.value };
+
+    if (this.editMode)
+      formData._id = this.editRestaurant._id;
+
+      return formData;
   }
 
   setFormData() {
@@ -68,6 +72,26 @@ export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
         popularRestaurant: popularRestaurant ? popularRestaurant : false
       });
     });
+  }
+
+  deleteItem() {
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this Item!",
+      icon: "warning",
+      buttons: ["Cancel", "Ok"],
+      dangerMode: true,
+    })
+      .then((willDelete) => {
+        if (willDelete) {
+          this.onDeleteEvent.emit(this.editRestaurant);
+
+          swal(`"${this.editRestaurant.name}" has been deleted!`, {
+            icon: "success",
+          });
+          this.activeModal.close();
+        }
+      });
   }
 
 }

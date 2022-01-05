@@ -41,4 +41,11 @@ export class ChefsService {
             this.fetchChefs();
         })
     }
+
+    deleteChef(id:string){
+        this.http.delete(`http://127.0.0.1:3000/chefs/${id}`).subscribe((response: string) => {
+            console.log("response delete chef", response);
+            this.fetchChefs();
+        })
+    }
 }
