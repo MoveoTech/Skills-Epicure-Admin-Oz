@@ -45,7 +45,7 @@ export class DishFormModalComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       const dish = this.getFormData();
-      console.log("Dish To Emit", dish);
+      console.log("Dish to emit", dish);
       this.onSubmitEvent.emit(dish);
       this.activeModal.close();
     }
