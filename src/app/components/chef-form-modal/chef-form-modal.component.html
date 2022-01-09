@@ -27,6 +27,7 @@
         ngModel
         name="name"
         required
+        [disabled]="editMode"
       />
     </div>
 
@@ -65,7 +66,7 @@
         class="form-check-input"
         type="checkbox"
         id="chefOfTheWeekSwitch"
-        ngModel
+        [ngModel]="false"
         name="chefOfTheWeek"
       />
     </div>
@@ -81,7 +82,7 @@
     <button
       type="submit"
       class="btn btn-outline-primary"
-      [disabled]="!form.dirty"
+      [disabled]="!form.valid || !form.dirty"
     >
       {{ submitButtonText }}
     </button>

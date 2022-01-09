@@ -26,7 +26,6 @@ export class DishFormModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, private restaurantsService: RestaurantsService, private dishesService: DishesService) { }
 
   ngOnInit(): void {
-    console.log("onInit", this.editDish, this.restaurants);
     this.restaurants = this.restaurantsService.restaurants;
     this.dishTypes = this.dishesService.dishTypes;
 
@@ -38,7 +37,7 @@ export class DishFormModalComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    console.log("afterViewInit", this.editDish);
+
     if (this.editMode)
       this.setFormData();
   }
@@ -47,7 +46,7 @@ export class DishFormModalComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       const dish = this.getFormData();
-      console.log("Dish to emit", dish);
+      // console.log("Dish to emit", dish);
       this.onSubmitEvent.emit(dish);
       this.activeModal.close();
     }

@@ -1,47 +1,84 @@
 import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { API_URL } from '../assets/constants/constants';
-import { IChef, IDish, IRestaurant } from '../assets/models';
+import { IChef, IDish, IRestaurant, IServerResponse } from '../assets/models';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class RestaurantsService {
+    @Output() serverResponseEvent = new EventEmitter<IServerResponse>();
     restaurantsUpdateEvent = new EventEmitter<IRestaurant[]>();
 
     restaurants: IRestaurant[] = [];
-    // readonly API_URL = API_URL.chefs;
-    constructor(private http: HttpClient) {
+    readonly API = API_URL.restaurants;
+    constructor(private http: HttpClient, private authService: AuthService) {
         this.fetchRestaurants();
     }
 
     fetchRestaurants() {
-        //need to check why using API_URL.chefs not working
-        this.http.get('http://127.0.0.1:3000/restaurants').subscribe((restaurants: IRestaurant[]) => {
-            console.log("Restaurants", restaurants)
-            this.restaurants = restaurants;
-            this.restaurantsUpdateEvent.emit(this.restaurants);
+        this.http.get(this.API, this.authService.authorizationHeader).subscribe({
+            next: this.fetchRestaurantsHandler.bind(this),
+            error: this.errorHandler.bind(this)
         })
     }
 
+    fetchRestaurantsHandler(restaurants: IRestaurant[]) {
+        console.log("Restaurants", restaurants)
+        this.restaurants = restaurants;
+        this.restaurantsUpdateEvent.emit(this.restaurants);
+    }
+
     updateRestaurant(restaurant: IRestaurant) {
-        //need to check why using API_URL.chefs not working
-        this.http.put(`http://127.0.0.1:3000/restaurants/${restaurant._id}`, restaurant).subscribe((responseRestaurant: IRestaurant) => {
-            console.log("response put restaurant", responseRestaurant);
-            this.fetchRestaurants();
+        this.http.put(`${this.API}/${restaurant._id}`, restaurant, this.authService.authorizationHeader).subscribe({
+            next: this.updateRestaurant.bind(this),
+            error: this.errorHandler.bind(this)
         })
+    }
+
+    updateRestaurantHandler(responseRestaurant: IRestaurant) {
+        console.log("response put restaurant", responseRestaurant);
+        this.fetchRestaurants();
     }
 
     postRestaurant(restaurant: IRestaurant) {
         //need to check why using API_URL.chefs not working
-        this.http.post('http://127.0.0.1:3000/restaurants', restaurant).subscribe((responseRestaurant: IRestaurant) => {
-            console.log("response post restaurant", responseRestaurant);
-            this.fetchRestaurants();
+        this.http.post(this.API, restaurant, this.authService.authorizationHeader).subscribe({
+            next: this.postRestaurant.bind(this),
+            error: this.errorHandler.bind(this)
         })
     }
 
-    deleteRestaurant(id:string){
-        this.http.delete(`http://127.0.0.1:3000/restaurants/${id}`).subscribe((response: string) => {
-            console.log("response delete restaurant", response);
-            this.fetchRestaurants();
+    postRestaurantHandler(responseRestaurant: IRestaurant) {
+        console.log("response post restaurant", responseRestaurant);
+        this.fetchRestaurants();
+    }
+
+    deleteRestaurant(id: string) {
+        this.http.delete(`http://127.0.0.1:3000/restaurants/${id}`, this.authService.authorizationHeader).subscribe({
+            next: this.deleteRestaurantHandler.bind(this),
+            error: this.errorHandler.bind(this)
         })
+    }
+
+    deleteRestaurantHandler(response: string) {
+        console.log("response delete restaurant", response);
+        this.fetchRestaurants();
+    }
+
+    errorHandler(err) {
+        console.log("errorHandler", err);
+        const serverResponse: IServerResponse = {
+            valid: false,
+            message: err.error,
+        }
+
+        switch (err.status) {
+            case 403:
+                this.authService.onAccessForbidden();
+                break;
+            default:
+                this.serverResponseEvent.emit(serverResponse);
+        }
+
     }
 }

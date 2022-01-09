@@ -16,6 +16,7 @@ import { NgbModule,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { RestaurantFormModalComponent } from './components/restaurant-form-modal/restaurant-form-modal.component';
 import { DishFormModalComponent } from './components/dish-form-modal/dish-form-modal.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { DishFormModalComponent } from './components/dish-form-modal/dish-form-m
     ChefFormModalComponent,
     RestaurantFormModalComponent,
     DishFormModalComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

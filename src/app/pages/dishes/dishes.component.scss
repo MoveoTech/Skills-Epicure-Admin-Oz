@@ -6,4 +6,9 @@
   .dish-row {
     cursor: pointer;
   }
+  
+  .btn-container {
+    display: flex;
+    justify-content: space-between;
+  }
 }

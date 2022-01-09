@@ -1,51 +1,107 @@
-import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { API_URL } from '../assets/constants/constants';
-import { IChef } from '../assets/models';
+import { IChef, IServerResponse } from '../assets/models';
+import { AuthService } from './auth.service';
+
 
 @Injectable({ providedIn: 'root' })
 export class ChefsService {
+    @Output() serverResponseEvent = new EventEmitter<IServerResponse>();
     chefsUpdateEvent = new EventEmitter<IChef[]>();
 
-    chefs: IChef[] = [];
-    private chefOfTheWeek: IChef = undefined;
-    // readonly API_URL = API_URL.chefs;
+    readonly API = API_URL.chefs;
 
-    constructor(private http: HttpClient) {
-        console.log("chef service constructor",this.chefs);
+    chefs: IChef[] = [];
+
+    constructor(private http: HttpClient, private authService: AuthService) {
+        // this.authService.onAuthentication.subscribe(() => {
+        //     this.setAuthorizationHeader(this.authService.token.value);
+        // });
+
+        // if(this.authService.isAuthenticated()){
+        //     this.setAuthorizationHeader(this.authService.token.value);
+        // }
+        console.log("chefs constructor");
         this.fetchChefs();
     }
 
     fetchChefs() {
-        //need to check why using API_URL.chefs not working
-        this.http.get('http://127.0.0.1:3000/chefs').subscribe((chefs: IChef[]) => {
-            console.log("fetchChefs", chefs)
-            this.chefs = chefs;
-            this.chefsUpdateEvent.emit(this.chefs);
+        console.log("fetchChefs ", this.authService.authorizationHeader)
+        this.http.get(this.API, this.authService.authorizationHeader).subscribe({
+            next: this.fetchChefsHandler.bind(this),
+            error: this.errorHandler.bind(this)
         })
+    }
+
+    fetchChefsHandler(chefs: IChef[]) {
+        console.log("fetchChefsHandler", chefs);
+
+        this.chefs = chefs;
+        this.chefsUpdateEvent.emit(this.chefs);
     }
 
     updateChef(chef: IChef) {
-        //need to check why using API_URL.chefs not working
-
-        this.http.put(`http://127.0.0.1:3000/chefs/${chef._id}`, chef).subscribe((responseChef: IChef) => {
-            console.log("response put chef", responseChef);
-            this.fetchChefs();
+        this.http.put(`${this.API}/${chef._id}`, chef, this.authService.authorizationHeader).subscribe({
+            next: this.updateChefHandler.bind(this),
+            error: this.errorHandler.bind(this)
         })
+    }
+
+    updateChefHandler(responseChef: IChef) {
+        console.log("response put chef", responseChef);
+        this.chefs.forEach(chef => {
+            if (chef._id === responseChef._id)
+                chef = responseChef;
+        })
+        this.chefsUpdateEvent.emit(this.chefs);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "PUT" });
     }
 
     postChef(chef: IChef) {
-        //need to check why using API_URL.chefs not working
-        this.http.post('http://127.0.0.1:3000/chefs', chef).subscribe((responseChef: IChef) => {
-            console.log("response post chef", responseChef);
-            this.fetchChefs();
+        this.http.post(this.API, chef, this.authService.authorizationHeader).subscribe({
+            next: this.postChefHandler.bind(this),
+            error: this.errorHandler.bind(this)
+        });
+
+    }
+
+    postChefHandler(responseChef: IChef) {
+        console.log("response post chef", responseChef);
+        this.chefs.push(responseChef);
+        this.chefsUpdateEvent.emit(this.chefs);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "POST" });
+    }
+
+    deleteChef(chef: IChef) {
+        this.http.delete(`${this.API}/${chef._id}`, this.authService.authorizationHeader).subscribe({
+            next: this.deleteChefHandler.bind(this),
+            error: this.errorHandler.bind(this)
         })
     }
 
-    deleteChef(id:string){
-        this.http.delete(`http://127.0.0.1:3000/chefs/${id}`).subscribe((response: string) => {
-            console.log("response delete chef", response);
-            this.fetchChefs();
-        })
+    deleteChefHandler(response: string) {
+        console.log("response delete chef", response);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "DELETE" });
+        this.fetchChefs();
+    }
+
+    errorHandler(err) {
+        console.log("errorHandler", err);
+        const serverResponse: IServerResponse = {
+            valid: false,
+            message: err.error,
+        }
+
+        switch (err.status) {
+            case 403:
+                console.log("chefs service error handler access forbidden")
+                this.authService.onAccessForbidden();
+                break;
+            default:
+                this.serverResponseEvent.emit(serverResponse);
+        }
+
     }
 }
+

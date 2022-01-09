@@ -2,6 +2,7 @@ import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IDish } from 'src/app/assets/models';
 import { DishFormModalComponent } from 'src/app/components/dish-form-modal/dish-form-modal.component';
+import { AuthService } from 'src/app/services';
 import { DishesService } from 'src/app/services/dishes.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { DishesService } from 'src/app/services/dishes.service';
 })
 export class DishesComponent implements OnInit, AfterContentInit {
   dishes: IDish[] = [];
-  constructor(private dishesService: DishesService, private modalService: NgbModal) { }
+  constructor(private dishesService: DishesService, private modalService: NgbModal, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.dishesService.dishesUpdateEvent.subscribe(dishes => {
@@ -54,11 +55,13 @@ export class DishesComponent implements OnInit, AfterContentInit {
     else
       this.dishesService.postDish(dish);
   }
-  
-  dishDeleteHandler(dish:IDish){
+
+  dishDeleteHandler(dish: IDish) {
     this.dishesService.deleteDish(dish._id);
   }
 
-
+  logout() {
+    this.authService.logout();
+  }
 
 }

@@ -1,0 +1,36 @@
+<div class="form-container">
+  <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <div class="mb-1">
+      <label for="userNameInput" class="form-label">User Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="userNameInput"
+        required
+        ngModel
+        name="userName"
+      />
+    </div>
+
+    <div class="mb-4">
+      <label for="passwordInpot" class="form-label">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="passwordInpot"
+        required
+        ngModel
+        name="password"
+      />
+    </div>
+    <div class="mb">
+      <button
+        type="submit"
+        class="btn btn-outline-primary form-control"
+        [disabled]="!form.valid || !form.dirty"
+      >
+        Login
+      </button>
+    </div>
+  </form>
+</div>

@@ -2,6 +2,7 @@ import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IRestaurant } from 'src/app/assets/models';
 import { RestaurantFormModalComponent } from 'src/app/components/restaurant-form-modal/restaurant-form-modal.component';
+import { AuthService } from 'src/app/services';
 import { RestaurantsService } from 'src/app/services/restaurants.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { RestaurantsService } from 'src/app/services/restaurants.service';
 })
 export class RestaurantsComponent implements OnInit, AfterContentInit {
   restaurants: IRestaurant[];
-  constructor(private restaurantsService: RestaurantsService, private modalService: NgbModal) { }
+  constructor(private restaurantsService: RestaurantsService, private modalService: NgbModal,private authService:AuthService) { }
 
   ngOnInit(): void {
     this.restaurantsService.restaurantsUpdateEvent.subscribe((restaurants: IRestaurant[]) => {
@@ -56,5 +57,9 @@ export class RestaurantsComponent implements OnInit, AfterContentInit {
 
   restaurantDeleteHandler(restaurant: IRestaurant) {
     this.restaurantsService.deleteRestaurant(restaurant._id);
+  }
+
+  logout(){
+    this.authService.logout();
   }
 }

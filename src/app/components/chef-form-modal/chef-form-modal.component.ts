@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild, AfterViewInit, Output, EventEmitte
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { IChef } from 'src/app/assets/models';
+import { IChef, IServerResponse } from 'src/app/assets/models';
 
 @Component({
   selector: 'app-chef-modal',
@@ -11,6 +11,7 @@ import { IChef } from 'src/app/assets/models';
 })
 export class ChefFormModalComponent implements OnInit, AfterViewInit {
   @Input() editChef: IChef;
+  @Input() serverSubmitResponseEvent: EventEmitter<IServerResponse>;
   @ViewChild('form') form: NgForm;
   @Output('onSubmit') onSubmitEvent = new EventEmitter<IChef>();
   @Output('onDelete') onDeleteEvent = new EventEmitter<IChef>();
@@ -19,8 +20,7 @@ export class ChefFormModalComponent implements OnInit, AfterViewInit {
   title = "New Chef"
   submitButtonText = "Create";
 
-  constructor(public activeModal: NgbActiveModal) {
-  }
+  constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
     console.log("onInit", this.editChef);
@@ -33,10 +33,41 @@ export class ChefFormModalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log("afterViewInit", this.editChef);
+    console.log("After view init", this.form);
+
+    if (this.serverSubmitResponseEvent)
+      this.serverSubmitResponseEvent.subscribe(response => this.serverSubmitResponseHandler(response))
 
     if (this.editMode)
       this.setFormData();
+  }
+
+  serverSubmitResponseHandler(response: IServerResponse) {
+    console.log("serverSubmitResponseHandler", response);
+
+    if (response.valid) {
+      switch (response.httpMethodRequest) {
+        case "PUT":
+          swal("Done!", "Chef Updated!", "success");
+          break;
+        case "POST":
+          swal("Done!", "New Chef Created!", "success");
+          break;
+        case "DELETE":
+          swal(`"${this.editChef.name}" has been deleted!`, "success");
+          break;
+      }
+
+      if (this.editMode)
+        swal("Done!", "Chef Updated!", "success");
+      else
+
+
+        this.activeModal.close();
+    }
+    else {
+      swal("Error!", response.message, "error");
+    }
   }
 
   onSubmit() {
@@ -45,7 +76,6 @@ export class ChefFormModalComponent implements OnInit, AfterViewInit {
 
       console.log("chef To Emit", chef);
       this.onSubmitEvent.emit(chef);
-      this.activeModal.close();
     }
   }
 

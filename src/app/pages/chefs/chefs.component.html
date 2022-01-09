@@ -1,7 +1,13 @@
 <div class="container">
-  <button type="button" class="btn btn-primary" (click)="openModal()">
-    New Chef
-  </button>
+  <div class="btn-container">
+    <button type="button" class="btn btn-primary" (click)="openModal()">
+      New Chef
+    </button>
+    <button type="button" class="btn btn-outline-danger" (click)="logout()">
+      Logout
+    </button>
+
+  </div>
 
   <div class="table-responsive">
     <table class="table table-dark table-striped table-hover">
