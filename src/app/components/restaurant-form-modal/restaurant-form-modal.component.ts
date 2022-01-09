@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
-import { IChef, IRestaurant } from 'src/app/assets/models';
+import { IChef, IRestaurant, IServerResponse } from 'src/app/assets/models';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChefsService } from 'src/app/services/chefs.service';
 
@@ -13,20 +13,21 @@ import { ChefsService } from 'src/app/services/chefs.service';
 })
 export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
   @Input() editRestaurant: IRestaurant;
+  @Input() serverSubmitResponseEvent: EventEmitter<IServerResponse>;
   @ViewChild('form') form: NgForm;
   @Output('onSubmit') onSubmitEvent = new EventEmitter<IRestaurant>();
   @Output('onDelete') onDeleteEvent = new EventEmitter<IRestaurant>();
   chefs: IChef[];
 
   editMode = false;
-  title = "New Restaurant"
+  title = "New Restaurant";
   submitButtonText = "Create";
 
-  constructor(public activeModal: NgbActiveModal, private chefsService: ChefsService) {}
+  constructor(public activeModal: NgbActiveModal, private chefsService: ChefsService) { }
 
   ngOnInit(): void {
     console.log("onInit", this.editRestaurant, this.chefs);
-    this.chefs = this.chefsService.chefs;
+    this.chefs;
 
     if (this.editRestaurant) {
       this.editMode = true;
@@ -38,8 +39,35 @@ export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     console.log("afterViewInit", this.editRestaurant);
 
+    if (this.serverSubmitResponseEvent)
+      this.serverSubmitResponseEvent.subscribe(response => this.serverSubmitResponseHandler(response))
+
     if (this.editMode)
       this.setFormData();
+  }
+
+  serverSubmitResponseHandler(response: IServerResponse) {
+
+    if (response.valid) {
+      switch (response.httpMethodRequest) {
+        case "PUT":
+          swal("Done!", "Restaurant Updated!", "success");
+          break;
+        case "POST":
+          swal("Done!", "New Restaurant Created!", "success");
+          break;
+        case "DELETE":
+          swal(`"${this.editRestaurant.name}" has been deleted!`, "success");
+          break;
+      }
+      // if (this.editMode)
+      //   swal("Done!", "Restaurant Updated!", "success");
+      // else
+      this.activeModal.close();
+    }
+    else {
+      swal("Error!", response.message, "error");
+    }
   }
 
   onSubmit() {
@@ -58,7 +86,7 @@ export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
     if (this.editMode)
       formData._id = this.editRestaurant._id;
 
-      return formData;
+    return formData;
   }
 
   setFormData() {

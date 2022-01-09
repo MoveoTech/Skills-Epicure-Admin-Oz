@@ -8,27 +8,19 @@ import { AuthService } from './auth.service';
 @Injectable({ providedIn: 'root' })
 export class ChefsService {
     @Output() serverResponseEvent = new EventEmitter<IServerResponse>();
-    chefsUpdateEvent = new EventEmitter<IChef[]>();
+    @Output() chefsUpdateEvent = new EventEmitter<IChef[]>();
 
     readonly API = API_URL.chefs;
 
     chefs: IChef[] = [];
 
     constructor(private http: HttpClient, private authService: AuthService) {
-        // this.authService.onAuthentication.subscribe(() => {
-        //     this.setAuthorizationHeader(this.authService.token.value);
-        // });
-
-        // if(this.authService.isAuthenticated()){
-        //     this.setAuthorizationHeader(this.authService.token.value);
-        // }
         console.log("chefs constructor");
         this.fetchChefs();
     }
 
     fetchChefs() {
-        console.log("fetchChefs ", this.authService.authorizationHeader)
-        this.http.get(this.API, this.authService.authorizationHeader).subscribe({
+         this.http.get(this.API, this.authService.authorizationHeader).subscribe({
             next: this.fetchChefsHandler.bind(this),
             error: this.errorHandler.bind(this)
         })
@@ -36,7 +28,6 @@ export class ChefsService {
 
     fetchChefsHandler(chefs: IChef[]) {
         console.log("fetchChefsHandler", chefs);
-
         this.chefs = chefs;
         this.chefsUpdateEvent.emit(this.chefs);
     }

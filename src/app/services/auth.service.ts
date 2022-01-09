@@ -7,7 +7,7 @@ import { API_URL } from '../assets/constants/constants';
 @Injectable({ providedIn: 'root' })
 export class AuthService implements OnDestroy {
     @Output() onTokenValidityChange = new EventEmitter<boolean>();
-
+    @Output() onError = new EventEmitter<string>();
     token: IToken = { value: undefined, expires: undefined, valid: false, expiresTimer: undefined };
     authorizationHeader = { headers: { authorization: '' } };
 
@@ -21,23 +21,23 @@ export class AuthService implements OnDestroy {
         clearTimeout(this.token.expiresTimer);
     }
 
-    private loginResponseHandler(response) {
+    loginResponseHandler(response: { token: string, expires: number }) {
         console.log("response", response);
-        this.setToken(response.value.token, response.value.expires);
+        this.setToken(response.token, response.expires);
         this.setCookieToken();
     }
 
-    private setCookieToken() {
+    setCookieToken() {
         document.cookie = `token=${this.token.value}`;
         document.cookie = `expires=${this.token.expires.getTime()}`
     }
 
-    private removeCookeToken() {
+    removeCookeToken() {
         document.cookie = "token=";
         document.cookie = "expires=";
     }
 
-    private setToken(token: string, millisecondExpires: number) {
+    setToken(token: string, millisecondExpires: number) {
         this.token.value = token;
         this.token.expires = new Date(millisecondExpires);
         this.token.valid = this.token.expires > new Date();
@@ -46,12 +46,12 @@ export class AuthService implements OnDestroy {
             this.authorizationHeader.headers.authorization = `Bearer ${this.token.value}`;
             this.setTokenTimer();
         }
-        
+
         this.onTokenValidityChange.emit(this.token.valid);
         return this.token.valid;
     }
 
-    private setTokenFromCookie() {
+    setTokenFromCookie() {
         const token = { value: undefined, expires: undefined };
         const cookieArray = document.cookie.split(';');
 
@@ -66,7 +66,7 @@ export class AuthService implements OnDestroy {
         this.setToken(token.value, parseInt(token.expires));
     }
 
-    private setTokenTimer() {
+    setTokenTimer() {
         if (this.token.valid) {
             const now = new Date();
             const timeout = this.token.expires.getTime() - now.getTime();
@@ -80,7 +80,7 @@ export class AuthService implements OnDestroy {
             next: this.loginResponseHandler.bind(this),
             error: (e) => {
                 console.log("login error", e);
-                throw e;
+                this.onError.emit(e);
             }
         })
     }

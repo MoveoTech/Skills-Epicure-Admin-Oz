@@ -1,6 +1,9 @@
 <form (ngSubmit)="onSubmit()" #form="ngForm">
   <div class="modal-header">
-    <h4 class="modal-title">{{ title }}</h4>
+    <div class="mb">
+      <h4 class="modal-title">{{ title }}</h4>
+      <p>(* Required Fields)</p>
+    </div>
     <button
       *ngIf="editMode"
       type="button"
@@ -18,22 +21,22 @@
   <div class="modal-body">
     <!-- Name Input -->
     <div class="mb-3">
-      <label for="nameInput" class="form-label">Name</label>
+      <label for="nameInput" class="form-label">*Name</label>
       <input
         ngbAutofocus
         type="text"
         class="form-control"
         id="nameInput"
-        placeholder="Dish Name"
         ngModel
         name="name"
         required
+        [disabled]="editMode"
       />
     </div>
 
     <!-- Restaurant Input -->
     <div class="mb-3">
-      <label for="restaurantSelect" class="form-label">Restaurant</label>
+      <label for="restaurantSelect" class="form-label">*Restaurant</label>
       <select
         id="restaurantSelect"
         class="form-select"
@@ -43,8 +46,7 @@
       >
         <option
           *ngFor="let restaurant of restaurants; index as i"
-          value="{{ restaurant._id }}"
-        >
+          value="{{ restaurant._id }}">
           {{ restaurant.name }}
         </option>
       </select>
@@ -52,23 +54,25 @@
 
     <!-- Components Input -->
     <div class="mb-3">
-      <label for="componentsTextarea" class="form-label">Components</label>
+      <label for="componentsTextarea" class="form-label">*Components</label>
       <textarea
         class="form-control"
         id="componentsTextarea"
         rows="3"
-        placeholder="Dish Components"
         ngModel
         name="components"
+        required
       ></textarea>
     </div>
 
     <!-- Dish Type Input -->
     <div ngModelGroup="type" name="type" class="mb-3">
+      <label for="dishTimeInput" class="form-label dish-type-label">Type</label>
       <div
         *ngFor="let type of dishTypes; index as i"
         class="btn-group"
         role="group"
+        id="dishTimeInput"
       >
         <input
           type="checkbox"
@@ -93,7 +97,6 @@
         type="text"
         class="form-control"
         id="imageUrlInput"
-        placeholder="Chef Image Url"
         ngModel
         name="imageUrl"
       />
@@ -101,14 +104,13 @@
 
     <!-- Price Input -->
     <div class="mb-3">
-      <label for="priceInput" class="form-label">Price</label>
+      <label for="priceInput" class="form-label">*Price</label>
       <div class="input-group mb-3">
         <input
           type="number"
           class="form-control"
           aria-label="Amount (to the nearest dollar)"
           id="priceInput"
-          placeholder="Dish Price"
           ngModel
           name="price"
           required
@@ -118,7 +120,7 @@
     </div>
 
     <!-- Signature Dish Input -->
-    <div class="form-check form-switch">
+    <div class="form-check form-switch signature-dish-container">
       <label class="form-check-label" for="signatureDishSwitch"
         >Signature Dish</label
       >
@@ -128,7 +130,6 @@
         id="signatureDishSwitch"
         [ngModel]="false"
         name="signatureDish"
-        
       />
     </div>
   </div>
@@ -144,7 +145,7 @@
     <button
       type="submit"
       class="btn btn-outline-primary"
-      [disabled]="!form.dirty"
+      [disabled]="!form.valid || !form.dirty"
     >
       {{ submitButtonText }}
     </button>

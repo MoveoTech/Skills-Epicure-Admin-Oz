@@ -43,7 +43,6 @@ export class ChefFormModalComponent implements OnInit, AfterViewInit {
   }
 
   serverSubmitResponseHandler(response: IServerResponse) {
-    console.log("serverSubmitResponseHandler", response);
 
     if (response.valid) {
       switch (response.httpMethodRequest) {
@@ -58,11 +57,9 @@ export class ChefFormModalComponent implements OnInit, AfterViewInit {
           break;
       }
 
-      if (this.editMode)
-        swal("Done!", "Chef Updated!", "success");
-      else
-
-
+      // if (this.editMode)
+      //   swal("Done!", "Chef Updated!", "success");
+      // else
         this.activeModal.close();
     }
     else {

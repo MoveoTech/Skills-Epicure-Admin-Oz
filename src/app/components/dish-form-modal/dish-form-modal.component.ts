@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
-import { IDish, IDishType, IRestaurant } from 'src/app/assets/models';
+import { IDish, IDishType, IRestaurant, IServerResponse } from 'src/app/assets/models';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestaurantsService } from 'src/app/services/restaurants.service';
 import { DishesService } from 'src/app/services/dishes.service';
@@ -13,6 +13,8 @@ import { DishesService } from 'src/app/services/dishes.service';
 })
 export class DishFormModalComponent implements OnInit {
   @Input() editDish: IDish;
+  @Input() serverSubmitResponseEvent: EventEmitter<IServerResponse>;
+
   @ViewChild('form') form: NgForm;
   @Output('onSubmit') onSubmitEvent = new EventEmitter<IDish>();
   @Output('onDelete') onDeleteEvent = new EventEmitter<IDish>();
@@ -23,11 +25,9 @@ export class DishFormModalComponent implements OnInit {
   title = "New Dish"
   submitButtonText = "Create";
 
-  constructor(public activeModal: NgbActiveModal, private restaurantsService: RestaurantsService, private dishesService: DishesService) { }
+  constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
-    this.restaurants = this.restaurantsService.restaurants;
-    this.dishTypes = this.dishesService.dishTypes;
 
     if (this.editDish) {
       this.editMode = true;
@@ -37,9 +37,35 @@ export class DishFormModalComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    if (this.serverSubmitResponseEvent)
+      this.serverSubmitResponseEvent.subscribe(response => this.serverSubmitResponseHandler(response))
 
     if (this.editMode)
       this.setFormData();
+  }
+
+  serverSubmitResponseHandler(response: IServerResponse) {
+
+    if (response.valid) {
+      switch (response.httpMethodRequest) {
+        case "PUT":
+          swal("Done!", "Dish Updated!", "success");
+          break;
+        case "POST":
+          swal("Done!", "New Dish Created!", "success");
+          break;
+        case "DELETE":
+          swal(`"${this.editDish.name}" has been deleted!`, "success");
+          break;
+      }
+      // if (this.editMode)
+      //   swal("Done!", "Restaurant Updated!", "success");
+      // else
+      this.activeModal.close();
+    }
+    else {
+      swal("Error!", response.message, "error");
+    }
   }
 
 
@@ -90,11 +116,11 @@ export class DishFormModalComponent implements OnInit {
 
   getTypeIdArray(formTypes: { [key: string]: boolean }) {
     const typesId: string[] = [];
-    
+
     this.dishTypes.forEach(type => {
-      if(formTypes[`${type.value}`])
+      if (formTypes[`${type.value}`])
         typesId.push(type._id)
-    } );
+    });
 
     return typesId;
   }

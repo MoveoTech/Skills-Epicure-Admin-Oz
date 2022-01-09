@@ -1,8 +1,9 @@
 import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IRestaurant } from 'src/app/assets/models';
+import { Subscription } from 'rxjs';
+import { IRestaurant, IServerResponse } from 'src/app/assets/models';
 import { RestaurantFormModalComponent } from 'src/app/components/restaurant-form-modal/restaurant-form-modal.component';
-import { AuthService } from 'src/app/services';
+import { AuthService, ChefsService } from 'src/app/services';
 import { RestaurantsService } from 'src/app/services/restaurants.service';
 
 @Component({
@@ -12,12 +13,25 @@ import { RestaurantsService } from 'src/app/services/restaurants.service';
 })
 export class RestaurantsComponent implements OnInit, AfterContentInit {
   restaurants: IRestaurant[];
-  constructor(private restaurantsService: RestaurantsService, private modalService: NgbModal,private authService:AuthService) { }
+  restaurantFormModal: {
+    submitSubscription: Subscription,
+    deleteSubscription: Subscription,
+  } = {
+      submitSubscription: undefined,
+      deleteSubscription: undefined,
+    };
 
-  ngOnInit(): void {
+  constructor(private restaurantsService: RestaurantsService,
+    private modalService: NgbModal,
+    private authService: AuthService,
+    private chefsService: ChefsService) {
     this.restaurantsService.restaurantsUpdateEvent.subscribe((restaurants: IRestaurant[]) => {
       this.restaurants = restaurants;
-    })
+    });
+    this.restaurantsService.serverResponseEvent.subscribe(response => this.serverResponseHandler(response));
+  }
+
+  ngOnInit(): void {
   }
 
   ngAfterContentInit() {
@@ -32,19 +46,20 @@ export class RestaurantsComponent implements OnInit, AfterContentInit {
     const activeModalRef = this.modalService.open(RestaurantFormModalComponent);
     const restaurantActiveModal = activeModalRef.componentInstance as RestaurantFormModalComponent;
 
+    restaurantActiveModal.serverSubmitResponseEvent = this.restaurantsService.serverResponseEvent;
+    restaurantActiveModal.chefs = this.chefsService.chefs;
+    
     if (restaurantIndex !== undefined)
       restaurantActiveModal.editRestaurant = this.restaurants[restaurantIndex];
 
-    const subscription = restaurantActiveModal.onSubmitEvent.subscribe(restaurant => {
+    this.restaurantFormModal.submitSubscription = restaurantActiveModal.onSubmitEvent.subscribe(restaurant => {
       console.log("restaurant after submitted", restaurant);
       this.restaurantSubmittedHandler(restaurant);
-      subscription.unsubscribe();
     })
 
-    const deleteSubscription = restaurantActiveModal.onDeleteEvent.subscribe(restaurant => {
+    this.restaurantFormModal.deleteSubscription = restaurantActiveModal.onDeleteEvent.subscribe(restaurant => {
       console.log("restaurant to delete ", restaurant);
       this.restaurantDeleteHandler(restaurant);
-      deleteSubscription.unsubscribe();
     });
   }
 
@@ -59,7 +74,14 @@ export class RestaurantsComponent implements OnInit, AfterContentInit {
     this.restaurantsService.deleteRestaurant(restaurant._id);
   }
 
-  logout(){
+  serverResponseHandler(response: IServerResponse) {
+    if (response.valid) {
+      this.restaurantFormModal.submitSubscription.unsubscribe();
+      this.restaurantFormModal.deleteSubscription.unsubscribe();
+    }
+  }
+
+  logout() {
     this.authService.logout();
   }
 }

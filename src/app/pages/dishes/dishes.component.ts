@@ -1,8 +1,9 @@
 import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IDish } from 'src/app/assets/models';
+import { Subscription } from 'rxjs';
+import { IDish, IServerResponse } from 'src/app/assets/models';
 import { DishFormModalComponent } from 'src/app/components/dish-form-modal/dish-form-modal.component';
-import { AuthService } from 'src/app/services';
+import { AuthService, RestaurantsService } from 'src/app/services';
 import { DishesService } from 'src/app/services/dishes.service';
 
 @Component({
@@ -12,7 +13,17 @@ import { DishesService } from 'src/app/services/dishes.service';
 })
 export class DishesComponent implements OnInit, AfterContentInit {
   dishes: IDish[] = [];
-  constructor(private dishesService: DishesService, private modalService: NgbModal, private authService: AuthService) { }
+  dishFormModal: {
+    submitSubscription: Subscription,
+    deleteSubscription: Subscription,
+  } = {
+      submitSubscription: undefined,
+      deleteSubscription: undefined,
+    };
+    
+  constructor(private dishesService: DishesService, private restaurantsService: RestaurantsService, private modalService: NgbModal, private authService: AuthService) {
+    this.restaurantsService.serverResponseEvent.subscribe(response => this.serverResponseHandler(response));
+  }
 
   ngOnInit(): void {
     this.dishesService.dishesUpdateEvent.subscribe(dishes => {
@@ -32,21 +43,20 @@ export class DishesComponent implements OnInit, AfterContentInit {
     const activeModalRef = this.modalService.open(DishFormModalComponent);
     const dishActiveModal = activeModalRef.componentInstance as DishFormModalComponent;
 
+    dishActiveModal.restaurants = this.restaurantsService.restaurants;
+    dishActiveModal.dishTypes = this.dishesService.dishTypes;
     if (dishIndex !== undefined)
       dishActiveModal.editDish = this.dishes[dishIndex];
 
-    const submitSubscription = dishActiveModal.onSubmitEvent.subscribe(dish => {
+    this.dishFormModal.submitSubscription = dishActiveModal.onSubmitEvent.subscribe(dish => {
       console.log("dish after submitted", dish);
       this.dishSubmitHandler(dish);
-      submitSubscription.unsubscribe();
     })
 
-    const deleteSubscription = dishActiveModal.onDeleteEvent.subscribe(dish => {
+    this.dishFormModal.deleteSubscription = dishActiveModal.onDeleteEvent.subscribe(dish => {
       console.log("dish to delete ", dish);
       this.dishDeleteHandler(dish);
-      deleteSubscription.unsubscribe();
     })
-
   }
 
   dishSubmitHandler(dish: IDish) {
@@ -62,6 +72,13 @@ export class DishesComponent implements OnInit, AfterContentInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  serverResponseHandler(response: IServerResponse) {
+    if (response.valid) {
+      this.dishFormModal.submitSubscription.unsubscribe();
+      this.dishFormModal.deleteSubscription.unsubscribe();
+    }
   }
 
 }

@@ -1,6 +1,9 @@
 <form (ngSubmit)="onSubmit()" #form="ngForm">
   <div class="modal-header">
-    <h4 class="modal-title">{{ title }}</h4>
+    <div class="mb">
+      <h4 class="modal-title">{{ title }}</h4>
+      <p>(* Required Fields)</p>
+    </div>
     <button
       *ngIf="editMode"
       type="button"
@@ -17,22 +20,22 @@
   <div class="modal-body">
     <!-- Name Input -->
     <div class="mb-3">
-      <label for="nameInput" class="form-label">Name</label>
+      <label for="nameInput" class="form-label">*Name</label>
       <input
         ngbAutofocus
         type="text"
         class="form-control"
         id="nameInput"
-        placeholder="Restaurant Name"
         ngModel
         name="name"
         required
+        [disabled]="editMode"
       />
     </div>
 
     <!-- Chef Input -->
     <div class="mb-3">
-      <label for="chefSelect" class="form-label">Chef</label>
+      <label for="chefSelect" class="form-label">*Chef</label>
       <select
         id="chefSelect"
         class="form-select"
@@ -52,7 +55,6 @@
         type="text"
         class="form-control"
         id="imageUrlInput"
-        placeholder="Chef Image Url"
         ngModel
         name="imageUrl"
       />
@@ -67,12 +69,12 @@
         class="form-check-input"
         type="checkbox"
         id="popularRestaurantSwitch"
-        ngModel
+        [ngModel]="false"
         name="popularRestaurant"
       />
     </div>
   </div>
-  
+
   <div class="modal-footer">
     <button
       type="button"
@@ -84,7 +86,7 @@
     <button
       type="submit"
       class="btn btn-outline-primary"
-      [disabled]="!form.dirty"
+      [disabled]="!form.valid || !form.dirty"
     >
       {{ submitButtonText }}
     </button>

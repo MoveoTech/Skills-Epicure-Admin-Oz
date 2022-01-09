@@ -1,5 +1,8 @@
 <div class="form-container">
   <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
     <div class="mb-1">
       <label for="userNameInput" class="form-label">User Name</label>
       <input

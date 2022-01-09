@@ -7,10 +7,11 @@ import { AuthService } from './auth.service';
 @Injectable({ providedIn: 'root' })
 export class RestaurantsService {
     @Output() serverResponseEvent = new EventEmitter<IServerResponse>();
-    restaurantsUpdateEvent = new EventEmitter<IRestaurant[]>();
+    @Output() restaurantsUpdateEvent = new EventEmitter<IRestaurant[]>();
 
     restaurants: IRestaurant[] = [];
     readonly API = API_URL.restaurants;
+    
     constructor(private http: HttpClient, private authService: AuthService) {
         this.fetchRestaurants();
     }
@@ -41,9 +42,9 @@ export class RestaurantsService {
     }
 
     postRestaurant(restaurant: IRestaurant) {
-        //need to check why using API_URL.chefs not working
+        console.log("postRestaurant",restaurant)
         this.http.post(this.API, restaurant, this.authService.authorizationHeader).subscribe({
-            next: this.postRestaurant.bind(this),
+            next: this.postRestaurantHandler.bind(this),
             error: this.errorHandler.bind(this)
         })
     }
@@ -66,7 +67,7 @@ export class RestaurantsService {
     }
 
     errorHandler(err) {
-        console.log("errorHandler", err);
+        console.log("restaurant service errorHandler", err);
         const serverResponse: IServerResponse = {
             valid: false,
             message: err.error,

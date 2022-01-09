@@ -9,14 +9,19 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent implements OnInit {
   @ViewChild('form') form: NgForm;
-  constructor(private authService: AuthService) {}
+  errorMessage = undefined;
+  constructor(private authService: AuthService) {
+
+    this.authService.onError.subscribe(error => {
+      this.errorMessage = 'Authenticated Failed!';
+    })
+  }
 
   ngOnInit(): void {
   }
 
   onSubmit() {
     const user = this.form.form.value;
-
     this.authService.login(user);
   }
 

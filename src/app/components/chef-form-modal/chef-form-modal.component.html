@@ -1,6 +1,9 @@
 <form (ngSubmit)="onSubmit()" #form="ngForm">
   <div class="modal-header">
-    <h4 class="modal-title">{{ title }}</h4>
+    <div class="mb">
+      <h4 class="modal-title">{{ title }}</h4>
+      <p>(* Required Fields)</p>
+    </div>
     <button
       *ngIf="editMode"
       type="button"
@@ -17,13 +20,12 @@
   <div class="modal-body">
     <!-- Name Input -->
     <div class="mb-3">
-      <label for="nameInput" class="form-label">Name</label>
+      <label for="nameInput" class="form-label">*Name</label>
       <input
         ngbAutofocus
         type="text"
         class="form-control"
         id="nameInput"
-        placeholder="Chef Name"
         ngModel
         name="name"
         required
@@ -38,7 +40,6 @@
         class="form-control"
         id="infoTextarea"
         rows="3"
-        placeholder="Chef Info"
         ngModel
         name="info"
       ></textarea>
@@ -51,7 +52,6 @@
         type="text"
         class="form-control"
         id="imageUrlInput"
-        placeholder="Chef Image Url"
         ngModel
         name="imageUrl"
       />
