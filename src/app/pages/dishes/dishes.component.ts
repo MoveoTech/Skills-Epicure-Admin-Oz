@@ -42,6 +42,8 @@ export class DishesComponent implements OnInit, AfterContentInit {
   openModal(dishIndex?: number) {
     const activeModalRef = this.modalService.open(DishFormModalComponent);
     const dishActiveModal = activeModalRef.componentInstance as DishFormModalComponent;
+    dishActiveModal.serverSubmitResponseEvent = this.dishesService.serverResponseEvent;
+
 
     dishActiveModal.restaurants = this.restaurantsService.restaurants;
     dishActiveModal.dishTypes = this.dishesService.dishTypes;

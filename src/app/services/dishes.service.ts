@@ -52,7 +52,11 @@ export class DishesService {
 
     updateDishHandler(responseDish: IDish) {
         console.log("response put dish", responseDish);
-        this.fetchDishes();
+        const updatedDishIndex = this.dishes.findIndex(dish => dish._id === responseDish._id);
+
+        this.dishes[updatedDishIndex] = responseDish;
+        this.dishesUpdateEvent.emit(this.dishes);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "PUT" });
     }
 
     postDish(dish: IDish) {
@@ -64,7 +68,9 @@ export class DishesService {
 
     postDishHandler(responseDish: IDish) {
         console.log("response post dish", responseDish);
-        this.fetchDishes();
+        this.dishes.push(responseDish);
+        this.dishesUpdateEvent.emit(this.dishes);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "POST" });
     }
 
 
@@ -75,9 +81,13 @@ export class DishesService {
         })
     }
 
-    deleteDishHandler(response: string) {
+    deleteDishHandler(response: { message: string, id: string }) {
         console.log("response delete dish", response);
-        this.fetchDishes();
+        const deletedDishIndex = this.dishes.findIndex(dish => dish._id === response.id);       
+         
+        this.dishes.splice(deletedDishIndex, 1);
+        this.dishesUpdateEvent.emit(this.dishes);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "DELETE" });
     }
 
     errorHandler(err) {

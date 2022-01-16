@@ -64,6 +64,7 @@ export class RestaurantsComponent implements OnInit, AfterContentInit {
   }
 
   restaurantSubmittedHandler(restaurant: IRestaurant) {
+    console.log("restaurantSubmittedHandler")
     if (restaurant._id)
       this.restaurantsService.updateRestaurant(restaurant);
     else

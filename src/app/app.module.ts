@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DishesComponent } from './pages/dishes/dishes.component';
 import { RestaurantsComponent } from './pages/restaurants/restaurants.component';
 import { ChefsComponent } from './pages/chefs/chefs.component';
@@ -22,7 +21,6 @@ import { LoginComponent } from './pages/login/login.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    DashboardComponent,
     DishesComponent,
     RestaurantsComponent,
     ChefsComponent,

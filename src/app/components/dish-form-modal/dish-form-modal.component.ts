@@ -45,27 +45,26 @@ export class DishFormModalComponent implements OnInit {
   }
 
   serverSubmitResponseHandler(response: IServerResponse) {
+    let responseText = '';
 
     if (response.valid) {
       switch (response.httpMethodRequest) {
         case "PUT":
-          swal("Done!", "Dish Updated!", "success");
+          responseText = "Dish Updated!";
           break;
         case "POST":
-          swal("Done!", "New Dish Created!", "success");
+          responseText = "New Dish Created!";
           break;
         case "DELETE":
-          swal(`"${this.editDish.name}" has been deleted!`, "success");
+          responseText = `"${this.editDish.name}" has been deleted!`;
           break;
       }
-      // if (this.editMode)
-      //   swal("Done!", "Restaurant Updated!", "success");
-      // else
+
+      swal("Done!", responseText, "success");
       this.activeModal.close();
     }
-    else {
+    else
       swal("Error!", response.message, "error");
-    }
   }
 
 
@@ -74,7 +73,6 @@ export class DishFormModalComponent implements OnInit {
       const dish = this.getFormData();
       // console.log("Dish to emit", dish);
       this.onSubmitEvent.emit(dish);
-      this.activeModal.close();
     }
   }
 

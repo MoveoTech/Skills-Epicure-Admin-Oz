@@ -47,27 +47,25 @@ export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
   }
 
   serverSubmitResponseHandler(response: IServerResponse) {
-
+    let responseText = '';
     if (response.valid) {
       switch (response.httpMethodRequest) {
         case "PUT":
-          swal("Done!", "Restaurant Updated!", "success");
+          responseText = "Restaurant Updated!";
           break;
         case "POST":
-          swal("Done!", "New Restaurant Created!", "success");
+          responseText = "New Restaurant Created!";
           break;
         case "DELETE":
-          swal(`"${this.editRestaurant.name}" has been deleted!`, "success");
+          responseText = `"${this.editRestaurant.name}" has been deleted!`;
           break;
       }
-      // if (this.editMode)
-      //   swal("Done!", "Restaurant Updated!", "success");
-      // else
+
+      swal("Done!", responseText, "success");
       this.activeModal.close();
     }
-    else {
+    else
       swal("Error!", response.message, "error");
-    }
   }
 
   onSubmit() {
@@ -76,7 +74,6 @@ export class RestaurantFormModalComponent implements OnInit, AfterViewInit {
 
       console.log("Restaurant To Emit", restaurant);
       this.onSubmitEvent.emit(restaurant);
-      this.activeModal.close();
     }
   }
 

@@ -11,7 +11,7 @@ export class RestaurantsService {
 
     restaurants: IRestaurant[] = [];
     readonly API = API_URL.restaurants;
-    
+
     constructor(private http: HttpClient, private authService: AuthService) {
         this.fetchRestaurants();
     }
@@ -31,18 +31,23 @@ export class RestaurantsService {
 
     updateRestaurant(restaurant: IRestaurant) {
         this.http.put(`${this.API}/${restaurant._id}`, restaurant, this.authService.authorizationHeader).subscribe({
-            next: this.updateRestaurant.bind(this),
+            next: this.updateRestaurantHandler.bind(this),
             error: this.errorHandler.bind(this)
         })
     }
 
     updateRestaurantHandler(responseRestaurant: IRestaurant) {
         console.log("response put restaurant", responseRestaurant);
-        this.fetchRestaurants();
+
+        const updatedRestaurantIndex = this.restaurants.findIndex(restaurant => restaurant._id === responseRestaurant._id);
+
+        this.restaurants[updatedRestaurantIndex] = responseRestaurant;
+        this.restaurantsUpdateEvent.emit(this.restaurants);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "PUT" });
     }
 
     postRestaurant(restaurant: IRestaurant) {
-        console.log("postRestaurant",restaurant)
+        console.log("postRestaurant", restaurant)
         this.http.post(this.API, restaurant, this.authService.authorizationHeader).subscribe({
             next: this.postRestaurantHandler.bind(this),
             error: this.errorHandler.bind(this)
@@ -51,7 +56,9 @@ export class RestaurantsService {
 
     postRestaurantHandler(responseRestaurant: IRestaurant) {
         console.log("response post restaurant", responseRestaurant);
-        this.fetchRestaurants();
+        this.restaurants.push(responseRestaurant);
+        this.restaurantsUpdateEvent.emit(this.restaurants);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "POST" });
     }
 
     deleteRestaurant(id: string) {
@@ -61,9 +68,13 @@ export class RestaurantsService {
         })
     }
 
-    deleteRestaurantHandler(response: string) {
+    deleteRestaurantHandler(response: { message: string, id: string }) {
         console.log("response delete restaurant", response);
-        this.fetchRestaurants();
+        const deletedRestaurantIndex = this.restaurants.findIndex(restaurant => restaurant._id === response.id);
+
+        this.restaurants.splice(deletedRestaurantIndex, 1);
+        this.restaurantsUpdateEvent.emit(this.restaurants);
+        this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "DELETE" });
     }
 
     errorHandler(err) {

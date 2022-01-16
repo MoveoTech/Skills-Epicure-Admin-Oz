@@ -43,28 +43,26 @@ export class ChefFormModalComponent implements OnInit, AfterViewInit {
   }
 
   serverSubmitResponseHandler(response: IServerResponse) {
+    let responseText = '';
 
     if (response.valid) {
       switch (response.httpMethodRequest) {
         case "PUT":
-          swal("Done!", "Chef Updated!", "success");
+          responseText = "Chef Updated!";
           break;
         case "POST":
-          swal("Done!", "New Chef Created!", "success");
+          responseText = "New Chef Created!";
           break;
         case "DELETE":
-          swal(`"${this.editChef.name}" has been deleted!`, "success");
+          responseText = `"${this.editChef.name}" has been deleted!`;
           break;
       }
 
-      // if (this.editMode)
-      //   swal("Done!", "Chef Updated!", "success");
-      // else
-        this.activeModal.close();
+      swal("Done!", responseText, "success");
+      this.activeModal.close();
     }
-    else {
+    else 
       swal("Error!", response.message, "error");
-    }
   }
 
   onSubmit() {

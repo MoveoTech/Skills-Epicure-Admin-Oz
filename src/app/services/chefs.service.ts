@@ -20,7 +20,7 @@ export class ChefsService {
     }
 
     fetchChefs() {
-         this.http.get(this.API, this.authService.authorizationHeader).subscribe({
+        this.http.get(this.API, this.authService.authorizationHeader).subscribe({
             next: this.fetchChefsHandler.bind(this),
             error: this.errorHandler.bind(this)
         })
@@ -41,10 +41,9 @@ export class ChefsService {
 
     updateChefHandler(responseChef: IChef) {
         console.log("response put chef", responseChef);
-        this.chefs.forEach(chef => {
-            if (chef._id === responseChef._id)
-                chef = responseChef;
-        })
+        const updatedChefIndex = this.chefs.findIndex(chef => chef._id === responseChef._id);
+
+        this.chefs[updatedChefIndex] = responseChef;
         this.chefsUpdateEvent.emit(this.chefs);
         this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "PUT" });
     }
@@ -71,10 +70,13 @@ export class ChefsService {
         })
     }
 
-    deleteChefHandler(response: string) {
+    deleteChefHandler(response: { message: string, id: string }) {
         console.log("response delete chef", response);
+        const deletedChefIndex = this.chefs.findIndex(chef => chef._id === response.id);
+        
+        this.chefs.splice(deletedChefIndex, 1);
+        this.chefsUpdateEvent.emit(this.chefs);
         this.serverResponseEvent.emit({ valid: true, httpMethodRequest: "DELETE" });
-        this.fetchChefs();
     }
 
     errorHandler(err) {
@@ -83,7 +85,6 @@ export class ChefsService {
             valid: false,
             message: err.error,
         }
-
         switch (err.status) {
             case 403:
                 console.log("chefs service error handler access forbidden")
@@ -92,7 +93,6 @@ export class ChefsService {
             default:
                 this.serverResponseEvent.emit(serverResponse);
         }
-
     }
 }
 
